@@ -33,6 +33,7 @@
 #include <RAT/PosGen_Multipoint.hh>
 #include <RAT/PosGen_TriMeshSurface.hh>
 #include <RAT/VertexGen_PhotonBomb.hh>
+#include <RAT/VertexGen_PhotonRay.hh>
 #include <RAT/VertexGen_WIMP.hh>
 #include <RAT/Gen_RandomTrigger.hh>
 #include <RAT/Log.hh>
@@ -95,6 +96,9 @@ GLG4PrimaryGeneratorAction()
   RAT::GlobalFactory<GLG4VertexGen>::Register("pbomb",
 					      new RAT::Alloc<GLG4VertexGen,
 					      RAT::VertexGen_PhotonBomb>);
+  RAT::GlobalFactory<GLG4VertexGen>::Register("pRay",
+					      new RAT::Alloc<GLG4VertexGen,
+					      RAT::VertexGen_PhotonRay>);
   RAT::GlobalFactory<GLG4VertexGen>::Register("wimp",
 					      new RAT::Alloc<GLG4VertexGen,
 					      RAT::VertexGen_WIMP>);
