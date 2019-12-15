@@ -37,46 +37,45 @@ namespace RAT {
       // Choose angles of injection and divergence of beam. Position of beam injection point currently set in macro
       G4ThreeVector mom;
       
-      // This code produces a uniform cone of light with opening angle = colldiv, pointing along the z-axis. 
-      // This cone is then converted to Cartesian coordinates, rotated around the x- and z-axes to point in any desired 
-      // direction, and then converted back to spherical coordinates.
+      double colldiv = 4;
       
-      double colldiv = 45;      // Collimator divergence angle in degrees
-      double theta_init = (G4UniformRand() * colldiv/2) * 2.0 * CLHEP::pi/360; // Initial theta value  
-      double phi_init = 2.0 * G4UniformRand() * CLHEP::pi;                     // Initial phi value 
-     
-      //Converting to Cartesian coordinates
-      double ax = sin(theta_init) * cos(phi_init);   
+      // want to randomly create number between cos(colldiv) and 1 
+      double colldivrad = colldiv * CLHEP::pi/360;
+      double range = 1-cos(colldivrad);
+      double theta_init = acos((range * G4UniformRand()) + (1-range));
+ 
+      //double theta_init = acos(2.0 * G4UniformRand - 1.0)*(colldiv/360);
+      double phi_init = 2.0 * G4UniformRand() * CLHEP::pi;
+
+
+      // double theta_init = (G4UniformRand() * colldiv/2) * 2.0 * CLHEP::pi/360;
+      // double theta_init = (acos(2*G4UniformRand()-1))*colldiv/(2*180); 
+      // double phi_init = 2.0 * G4UniformRand() * CLHEP::pi;
+
+      double ax = sin(theta_init) * cos(phi_init);
       double ay = sin(theta_init) * sin(phi_init);
       double az = cos(theta_init);
      
-      // Defines x-axis
       double kx = 1;
       double ky = 0;
       double kz = 0;
   
-      //  rottheta is desired theta (polar) angle, 90 for horizontal beams, 180 for downward facing etc.
-      double rottheta = 90 * 2.0 * CLHEP::pi/360;
+      double rottheta = 180 * 2.0 * CLHEP::pi/360;
 
-      // First rotation matrix
       double bx = (cos(rottheta) * ax) + (sin(rottheta)*(ky*az - kz*ay)) + (kx*kx*ax*(1-cos(rottheta)));
       double by = (cos(rottheta) * ay) + (sin(rottheta)*(kz*ax - kx*az)) + (ky*ky*ay*(1-cos(rottheta)));
       double bz = (cos(rottheta) * az) + (sin(rottheta)*(kx*ay - ky*ax)) + (kz*kz*az*(1-cos(rottheta)));
 
-      // Defines z-axis
       double gx = 0;
       double gy = 0;
       double gz = 1;
      
-      // Desired phi (azimuthal) angle
-      double rotphi = 90 * 2.0 * CLHEP::pi/360;
+      double rotphi = 0 * 2.0 * CLHEP::pi/360;
 
-      // Second rotation matrix
       double vx = (cos(rotphi) * bx) + (sin(rotphi)*(gy*bz - gz*by)) + (gx*gx*bx*(1-cos(rotphi))); 
       double vy = (cos(rotphi) * by) + (sin(rotphi)*(gz*bx - gx*bz)) + (gy*gy*by*(1-cos(rotphi)));
       double vz = (cos(rotphi) * bz) + (sin(rotphi)*(gx*by - gy*bx)) + (gz*gz*bz*(1-cos(rotphi)));
 
-      // Conversion back to spherical coordinates 
       double theta = acos(vz);
       double phi = atan2(vy,vx);
 
